@@ -3,7 +3,7 @@ class Api::RecipesController < ApplicationController
 
     if current_user
 
-      @recipes = Recipe.all
+      @recipes = current_user.recipes
 
       search_term = params[:search]
       @recipes = @recipes.where('title iLIKE ? OR ingredients iLIKE ?', "%#{search_term}%", "%#{search_term}%") if search_term
@@ -18,7 +18,7 @@ class Api::RecipesController < ApplicationController
   def create
     @recipe = Recipe.new(
                         title: params[:title],
-                        chef: params[:chef],
+                        user_id: current_user.id,
                         prep_time: params[:prep_time],
                         ingredients: params[:ingredients],
                         directions: params[:directions],
@@ -37,7 +37,7 @@ class Api::RecipesController < ApplicationController
     @recipe = Recipe.find(params[:id])
 
     @recipe.title = params[:title] || @recipe.title
-    @recipe.chef = params[:chef] || @recipe.chef
+    @recipe.user_id = current_user.id || @recipe.user_id
     @recipe.prep_time = params[:prep_time] || @recipe.prep_time
     @recipe.ingredients = params[:ingredients] || @recipe.ingredients
     @recipe.directions = params[:directions] || @recipe.directions
